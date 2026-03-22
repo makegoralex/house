@@ -1,0 +1,101 @@
+[
+  {
+    "id": "prj_001",
+    "slug": "barus-4m-100",
+    "title": "Barus-4M-100",
+    "sourceUrl": "https://tmdom.ru/catalog/barus-4m-1.5_65-100",
+    "status": "catalog",
+    "technology": "karkasno-modulnaya",
+    "type": "dvukhetazhnyy",
+    "modulesCount": 4,
+    "roomsCount": 4,
+    "areaTotalM2": 85,
+    "areaWarmM2": 70.2,
+    "terraceM2": 25,
+    "hasTerrace": true,
+    "dimensions": "11.8 x 6.8 x 6.11",
+    "ceilingHeightMinM": 2.65,
+    "ceilingHeightMaxM": 5.4,
+    "priceFromRub": 5700000,
+    "priceNote": "Стоимость зависит от комплектации",
+    "coverImage": "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1600566753056-00f18fb6b3ea?w=1200",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200"
+    ],
+    "planImages": [
+      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=1200"
+    ],
+    "descriptionShort": "Современный модульный дом для круглогодичного проживания.",
+    "descriptionFull": "Просторная гостиная-кухня, 4 комнаты, терраса и высокие потолки.",
+    "tags": [
+      "terrace",
+      "panorama"
+    ],
+    "createdAt": "2026-03-22T10:16:23.316Z",
+    "updatedAt": "2026-03-22T10:16:23.316Z"
+  },
+  {
+    "id": "prj_002",
+    "slug": "arctica-2m-48",
+    "title": "Arctica-2M-48",
+    "sourceUrl": "https://tmdom.ru/catalog",
+    "status": "catalog",
+    "technology": "karkas",
+    "type": "odnoetazhnyy",
+    "modulesCount": 2,
+    "roomsCount": 2,
+    "areaTotalM2": 48,
+    "areaWarmM2": 40,
+    "terraceM2": 8,
+    "hasTerrace": true,
+    "dimensions": "8.2 x 5.9 x 3.2",
+    "ceilingHeightMinM": 2.6,
+    "ceilingHeightMaxM": 2.8,
+    "priceFromRub": 3200000,
+    "priceNote": "Стоимость зависит от комплектации",
+    "coverImage": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200"
+    ],
+    "planImages": [],
+    "descriptionShort": "Компактный энергоэффективный дом с быстрой сборкой.",
+    "descriptionFull": "Оптимален под дачу и аренду, в том числе для глэмпинга.",
+    "tags": [
+      "terrace",
+      "for-rent"
+    ],
+    "createdAt": "2026-03-22T10:16:23.316Z",
+    "updatedAt": "2026-03-22T10:16:23.316Z"
+  },
+  {
+    "id": "prj_003",
+    "slug": "brus-neo-120",
+    "title": "Brus Neo 120",
+    "sourceUrl": "https://tmdom.ru/catalog",
+    "status": "built",
+    "technology": "kleenyy-brus",
+    "type": "dvukhetazhnyy",
+    "modulesCount": 4,
+    "roomsCount": 5,
+    "areaTotalM2": 120,
+    "areaWarmM2": 95,
+    "terraceM2": 0,
+    "hasTerrace": false,
+    "dimensions": "10.6 x 9.8 x 6.1",
+    "ceilingHeightMinM": 2.7,
+    "ceilingHeightMaxM": 5,
+    "priceFromRub": 8900000,
+    "priceNote": "Стоимость зависит от комплектации",
+    "coverImage": "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=1200",
+    "galleryImages": [],
+    "planImages": [],
+    "descriptionShort": "Дом из клеёного бруса для семьи с детьми.",
+    "descriptionFull": "Большая кухня-гостиная, мастер-спальня и кабинет.",
+    "tags": [
+      "smart-home"
+    ],
+    "createdAt": "2026-03-22T10:16:23.316Z",
+    "updatedAt": "2026-03-22T10:16:23.316Z"
+  }
+]
