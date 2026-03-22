@@ -80,22 +80,27 @@ const humanize = (value) => slugLabelMap[value] || value.replaceAll('-', ' ')
 
 const formatPrice = (value) => `${numberFormat.format(value)} ₽`
 
-const Header = () => (
-  <header className="topbar glass">
-    <a className="brand" href="/">
-      <span className="brand-logo">TM</span>
-      <span>
-        <strong>TM House</strong>
-        <small>Премиальные модульные дома</small>
-      </span>
-    </a>
-    <nav>
-      <a href="/about">О нас</a>
-      <a href="/catalog">Каталог</a>
-      <a className="cta-mini" href="#lead">Заявка</a>
-    </nav>
-  </header>
-)
+const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  return (
+    <header className="topbar">
+      <a className="brand" href="/">
+        <strong className="brand-title">tmhouse</strong>
+      </a>
+      <button className="burger" type="button" onClick={() => setMenuOpen((prev) => !prev)} aria-label="Открыть меню">
+        <span />
+        <span />
+        <span />
+      </button>
+      <nav className={menuOpen ? 'open' : ''}>
+        <a href="/about">О нас</a>
+        <a href="/catalog">Каталог</a>
+        <a className="cta-mini" href="#lead">Заявка</a>
+      </nav>
+    </header>
+  )
+}
 
 const FilterChips = ({ title, items, value, onChange }) => {
   const selected = value ? value.split(',').filter(Boolean) : []
