@@ -86,12 +86,12 @@ const Header = () => (
       <span className="brand-logo">TM</span>
       <span>
         <strong>TM House</strong>
-        <small>Каталог модульных домов</small>
+        <small>Премиальные модульные дома</small>
       </span>
     </a>
     <nav>
+      <a href="/about">О нас</a>
       <a href="/catalog">Каталог</a>
-      <a href="/admin">Админка</a>
       <a className="cta-mini" href="#lead">Заявка</a>
     </nav>
   </header>
@@ -335,6 +335,7 @@ const CatalogPage = () => {
   const [areaRange, setAreaRange] = useState(() => parseRangeQuery(parseQuery(window.location.search).area, [40, 120]))
   const [priceRange, setPriceRange] = useState(() => parseRangeQuery(parseQuery(window.location.search).price, [2000000, 9000000]))
   const [debouncedQ, setDebouncedQ] = useState(filters.q)
+  const [filterOpen, setFilterOpen] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQ(filters.q.trim()), 350)
@@ -366,7 +367,12 @@ const CatalogPage = () => {
 
   return (
     <main className="catalog-layout">
-      <aside className="filters-panel glass">
+      <div className="mobile-filter-trigger">
+        <button className="btn ghost" type="button" onClick={() => setFilterOpen((prev) => !prev)}>
+          {filterOpen ? 'Скрыть фильтр' : 'Показать фильтр'}
+        </button>
+      </div>
+      <aside className={filterOpen ? 'filters-panel glass open' : 'filters-panel glass'}>
         <div className="filters-head">
           <h2>Умный фильтр</h2>
           <button
@@ -381,6 +387,7 @@ const CatalogPage = () => {
             Сбросить
           </button>
         </div>
+        <button type="button" className="close-mobile-filter" onClick={() => setFilterOpen(false)}>Готово</button>
 
         <input className="search" placeholder="Поиск по названию" value={filters.q} onChange={(e) => update({ q: e.target.value })} />
         <DualRange label="Площадь" min={RANGE_LIMITS.area.min} max={RANGE_LIMITS.area.max} step={RANGE_LIMITS.area.step} value={areaRange} onChange={setAreaRange} />
@@ -434,6 +441,35 @@ const CatalogPage = () => {
     </main>
   )
 }
+
+const AboutPage = () => (
+  <main className="about-page">
+    <section className="about-hero">
+      <h1>ООО ТМДом — твой модульный дом</h1>
+      <p>Мы производим современные качественные деревянные модульные дома и бани круглогодичного использования в г. Пенза с доставкой и монтажом.</p>
+    </section>
+
+    <section className="about-grid">
+      <article>
+        <h2>Александр Осташков</h2>
+        <h4>Генеральный директор</h4>
+        <p>Современному потребителю не хочется жить годами на стройке и решать сложные строительные вопросы — хочется жить здесь и сейчас, быстро получая готовый результат «под ключ».</p>
+        <p>Этим запросам идеально удовлетворяет каркасно-модульное домостроение. Специалисты нашей компании всегда готовы честно рассказать о преимуществах и ограничениях технологии.</p>
+      </article>
+      <article>
+        <h2>Регина Котельникова</h2>
+        <h4>Коммерческий директор</h4>
+        <p>Проанализировав опыт коллег и различные строительные технологии, мы разработали эффективные конструктивные и планировочные решения, которые выгодно отличают нас от конкурентов.</p>
+        <p>Мы тщательно подходим к подбору материалов и комплектующих. При заключении договора вы получаете гарантию качества и прозрачные условия.</p>
+      </article>
+    </section>
+
+    <section className="about-note">
+      <p>На сайте представлены типовые проекты, однако наши архитекторы и дизайнеры готовы внести желаемые корректировки или разработать индивидуальный проект с учётом особенностей модульной технологии.</p>
+      <a className="btn" href="/catalog">Перейти в каталог проектов</a>
+    </section>
+  </main>
+)
 
 const ProjectPage = ({ slug }) => {
   const [project, setProject] = useState(null)
@@ -561,6 +597,7 @@ export default function App() {
   const path = window.location.pathname
   let page = <HomePage />
   if (path === '/catalog') page = <CatalogPage />
+  if (path === '/about') page = <AboutPage />
   if (path.startsWith('/projects/')) page = <ProjectPage slug={path.replace('/projects/', '')} />
   if (path === '/admin') page = <AdminPage />
 
