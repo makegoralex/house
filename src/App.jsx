@@ -199,101 +199,134 @@ const ProjectCard = ({ project }) => (
   </article>
 )
 
-const HomePage = () => (
-  <main>
-    <section className="hero glass">
-      <div>
-        <span className="label">ООО «ТМДОМ»</span>
-        <h1>Модульные дома высокого качества для круглогодичного проживания под ключ</h1>
-        <p>Производим и монтируем современные дома в короткие сроки: от компактных одномодульных до просторных четырёхмодульных решений.</p>
-        <div className="actions">
-          <a className="btn" href="/catalog">Подобрать проект</a>
-          <a className="btn ghost" href="#house-request">Рассчитать стоимость</a>
+const HomePage = () => {
+  const [featured, setFeatured] = useState([])
+
+  useEffect(() => {
+    fetch('/api/projects?limit=3').then((res) => res.json()).then((payload) => setFeatured(payload.items || []))
+  }, [])
+
+  return (
+    <main className="home-page">
+      <section className="hero-premium">
+        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=2000" alt="Современный модульный дом" />
+        <div className="hero-overlay" />
+        <div className="hero-content">
+          <span className="label dark">ООО «ТМДОМ» · производство в Пензе</span>
+          <h1>Модульные дома премиального качества для круглогодичного проживания</h1>
+          <p>Проектирование, производство, доставка и монтаж под ключ. Дорабатываем типовые проекты под ваш участок и задачи.</p>
+          <div className="actions">
+            <a className="btn" href="/catalog">Смотреть проекты</a>
+            <a className="btn ghost-dark" href="#lead">Получить консультацию</a>
+          </div>
+          <div className="hero-trust">
+            <span>Производство в Пензе</span>
+            <span>Доставка и монтаж</span>
+            <span>Проекты с ценами</span>
+            <span>Адаптация под клиента</span>
+          </div>
         </div>
-      </div>
-      <div className="hero-stats">
-        <div><strong>7–14 дней</strong><span>Монтаж на участке</span></div>
-        <div><strong>4 формата</strong><span>1 / 2 / 3 / 4 модуля</span></div>
-        <div><strong>LVL + термодерево</strong><span>Прочность и стабильность</span></div>
-      </div>
-    </section>
+      </section>
 
-    <section className="value-grid">
-      <div className="glass"><img src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=900" alt="Одномодульный дом" /><h3>Одномодульные</h3><p>Компактные решения для дачи и глэмпингов.</p></div>
-      <div className="glass"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900" alt="Двухмодульный дом" /><h3>Двухмодульные</h3><p>Баланс площади и бюджета для семьи 2–4 человека.</p></div>
-      <div className="glass"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900" alt="Трёхмодульный дом" /><h3>Трёхмодульные</h3><p>Комфорт для круглогодичного проживания.</p></div>
-      <div className="glass"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=900" alt="Четырёхмодульный дом" /><h3>Четырёхмодульные</h3><p>Максимальная площадь, приватность и комфорт.</p></div>
-    </section>
+      <section className="split-section">
+        <article>
+          <h2>Одно-, двух-, трёх- и четырёхмодульные дома</h2>
+          <p>Линейка проектов закрывает сценарии от дачного дома до постоянного семейного проживания и арендного бизнеса.</p>
+          <div className="module-list">
+            <span>01 · Одномодульные</span>
+            <span>02 · Двухмодульные</span>
+            <span>03 · Трёхмодульные</span>
+            <span>04 · Четырёхмодульные</span>
+          </div>
+        </article>
+        <aside>
+          <img src="https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=1200" alt="Фасад модульного дома" />
+        </aside>
+      </section>
 
-    <section className="infographics">
-      <article className="glass block">
-        <h2>Особенности технологии</h2>
-        <p>Скепсис к модульным домам уходит, потому что технология даёт измеримые преимущества: скорость, предсказуемость и качество заводской сборки.</p>
-        <div className="info-row">
-          <div><strong>Скорость строительства</strong><span>Сборка в тёплых заводских условиях и быстрый монтаж на участке без долгой стройки.</span></div>
-          <div><strong>Всесезонный монтаж</strong><span>Можно заезжать и праздновать новоселье в любое время года.</span></div>
-          <div><strong>Контроль качества</strong><span>Единый подрядчик, фиксированные этапы и прозрачные сроки.</span></div>
+      <section className="dark-band">
+        <div>
+          <h2>Почему нам доверяют</h2>
+          <p>Собственное производство, реальные построенные объекты, прозрачная стоимость и работа по договору.</p>
         </div>
-      </article>
-
-      <article className="glass block">
-        <h2>Наши преимущества</h2>
-        <ul className="icon-list">
-          <li>Никакой стройки на вашем участке</li>
-          <li>Качество производства и эстетика дома</li>
-          <li>Всесезонность поставки и скорость монтажа</li>
-          <li>Многообразие планировок и мобильность дома</li>
-          <li>Мы для вас — единственный подрядчик</li>
-          <li>Отделка термодеревом от ООО «ТМДерево»</li>
-        </ul>
-      </article>
-    </section>
-
-    <section className="infographics">
-      <article className="glass block">
-        <h2>Применение</h2>
-        <div className="steps">
-          <div><span>1</span><p>Для турбаз и глэмпингов</p></div>
-          <div><span>2</span><p>Для дачного участка</p></div>
-          <div><span>3</span><p>Для постоянного проживания и аренды</p></div>
+        <div className="trust-metrics">
+          <article><strong>7–14 дней</strong><span>монтаж на участке</span></article>
+          <article><strong>1 подрядчик</strong><span>от проекта до запуска</span></article>
+          <article><strong>LVL + термодерево</strong><span>стабильная геометрия и долговечность</span></article>
         </div>
-        <p><strong>Дом по цене голых стен студии.</strong></p>
-      </article>
-      <article className="glass block">
-        <h2>Почему LVL брус?</h2>
-        <p>Каркас из LVL бруса обеспечивает максимальную геометрическую стабильность дома. Прочность LVL в 1.5–3 раза выше, чем у клеёного бруса.</p>
-        <p>Термодерево в отделке — 100% натуральный материал с повышенной долговечностью и устойчивостью к влажности, плесени и перепадам температур.</p>
-      </article>
-    </section>
+      </section>
 
-    <section id="house-request" className="glass block custom-request">
-      <div>
-        <h2>Понравился дом из интернета?</h2>
-        <p>Пришлите изображение — построим его для вас с адаптацией под модульную технологию.</p>
-      </div>
-      <form className="request-form">
-        <input placeholder="Ваше имя*" />
-        <input placeholder="Ваш телефон*" />
-        <input type="file" accept=".jpg,.png" />
-        <small>* Принимаем .jpg/.png до 2 Мб. Отправляя форму, вы соглашаетесь с обработкой данных.</small>
-        <button className="btn" type="button">Отправить</button>
-      </form>
-    </section>
+      <section className="zigzag">
+        <article className="zig media"><img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1400" alt="Интерьер модульного дома" /></article>
+        <article className="zig text">
+          <h3>Особенности технологии</h3>
+          <p>Сборка модулей в тёплых заводских условиях даёт предсказуемое качество и быстрые сроки на участке без затяжной стройки.</p>
+          <ul>
+            <li>Всесезонный монтаж и запуск</li>
+            <li>Понятный договор и фиксированные этапы</li>
+            <li>Продуманные планировки для жизни круглый год</li>
+          </ul>
+        </article>
+        <article className="zig text">
+          <h3>Материалы: LVL брус и термодерево</h3>
+          <p>Каркас из LVL бруса обеспечивает высокую прочность и геометрическую стабильность, а отделка термодеревом повышает устойчивость к влаге и перепадам температур.</p>
+        </article>
+        <article className="zig media"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1400" alt="Текстура натурального дерева" /></article>
+      </section>
 
-    <section id="lead">
-      <LeadForm />
-    </section>
+      <section className="catalog-preview">
+        <header>
+          <h2>Каталог проектов</h2>
+          <a className="btn ghost" href="/catalog">Открыть весь каталог</a>
+        </header>
+        <div className="cards-grid">
+          {featured.map((item) => <ProjectCard key={item.id} project={item} />)}
+        </div>
+      </section>
 
-    <footer className="glass footer">
-      <h3>Контакты</h3>
-      <p><strong>ООО «ТМДОМ»</strong></p>
-      <p>ИНН 5836897858 · КПП 583601001</p>
-      <p>+7 (905) 365-47-39 · +7 (927) 377-54-97</p>
-      <p>Пензенская обл., Пензенский район, село Засечное, ул. Механизаторов, 22А</p>
-      <small>2023 © Все права защищены. Политика конфиденциальности.</small>
-    </footer>
-  </main>
-)
+      <section className="workflow">
+        <h2>Как проходит работа</h2>
+        <div className="workflow-grid">
+          {['Заявка', 'Консультация', 'Подбор проекта', 'Согласование изменений', 'Производство', 'Доставка и монтаж'].map((step, i) => (
+            <article key={step}><span>{String(i + 1).padStart(2, '0')}</span><p>{step}</p></article>
+          ))}
+        </div>
+      </section>
+
+      <section id="house-request" className="custom-request">
+        <div>
+          <h2>Понравился дом из интернета?</h2>
+          <p>Пришлите изображение — адаптируем проект под модульную технологию и рассчитаем стоимость.</p>
+        </div>
+        <form className="request-form">
+          <input placeholder="Ваше имя*" />
+          <input placeholder="Ваш телефон*" />
+          <input type="file" accept=".jpg,.png" />
+          <small>* Принимаем .jpg/.png до 2 Мб.</small>
+          <button className="btn" type="button">Получить подборку проектов</button>
+        </form>
+      </section>
+
+      <section id="lead" className="lead-grid">
+        <LeadForm />
+        <aside className="messengers">
+          <h3>Быстрая связь</h3>
+          <p>Напишите нам в мессенджер — ответим по срокам, цене и комплектациям.</p>
+          <a className="messenger tg" href="https://t.me" target="_blank" rel="noreferrer">Telegram</a>
+          <a className="messenger wa" href="https://wa.me/79053654739" target="_blank" rel="noreferrer">WhatsApp</a>
+        </aside>
+      </section>
+
+      <footer className="footer">
+        <h3>Контакты</h3>
+        <p><strong>ООО «ТМДОМ»</strong> · ИНН 5836897858 · КПП 583601001</p>
+        <p>+7 (905) 365-47-39 · +7 (927) 377-54-97</p>
+        <p>Пензенская обл., Пензенский район, село Засечное, ул. Механизаторов, 22А</p>
+        <small>2023 © Все права защищены. Политика конфиденциальности.</small>
+      </footer>
+    </main>
+  )
+}
 
 const CatalogPage = () => {
   const [filters, setFilters] = useState(() => parseQuery(window.location.search))
