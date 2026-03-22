@@ -2,9 +2,30 @@ import { useEffect, useMemo, useState } from 'react'
 
 const numberFormat = new Intl.NumberFormat('ru-RU')
 
+const FILTER_DEFAULTS = {
+  technology: '',
+  type: '',
+  tags: '',
+  rooms: '',
+  status: '',
+  area: '',
+  price: '',
+  hasTerrace: '',
+  q: '',
+  sort: 'newest',
+  page: 1,
+  limit: 12,
+}
+
+const RANGE_LIMITS = {
+  area: { min: 20, max: 180, step: 1 },
+  price: { min: 1000000, max: 15000000, step: 100000 },
+}
+
 const parseQuery = (search) => {
   const params = new URLSearchParams(search)
   return {
+    ...FILTER_DEFAULTS,
     technology: params.get('technology') || '',
     type: params.get('type') || '',
     tags: params.get('tags') || '',
@@ -14,33 +35,80 @@ const parseQuery = (search) => {
     price: params.get('price') || '',
     hasTerrace: params.get('hasTerrace') || '',
     q: params.get('q') || '',
-    sort: params.get('sort') || 'newest',
-    page: Number(params.get('page') || 1),
-    limit: Number(params.get('limit') || 12),
+    sort: params.get('sort') || FILTER_DEFAULTS.sort,
+    page: Number(params.get('page') || FILTER_DEFAULTS.page),
+    limit: Number(params.get('limit') || FILTER_DEFAULTS.limit),
   }
+}
+
+const parseRangeQuery = (value, fallback) => {
+  if (!value?.includes('-')) return fallback
+  const [minRaw, maxRaw] = value.split('-')
+  const min = Number(minRaw)
+  const max = Number(maxRaw)
+  if (Number.isNaN(min) || Number.isNaN(max)) return fallback
+  return [min, max]
 }
 
 const buildQuery = (filters) => {
   const params = new URLSearchParams()
   Object.entries(filters).forEach(([key, value]) => {
     if (value === '' || value == null) return
-    if (typeof value === 'number' && Number.isNaN(value)) return
     params.set(key, String(value))
   })
   return params.toString()
 }
 
-const FilterGroup = ({ title, items, value, onChange }) => {
+const slugLabelMap = {
+  'karkasno-modulnaya': 'Каркасно-модульная',
+  karkas: 'Каркасная',
+  'kleenyy-brus': 'Клеёный брус',
+  kombinirovannyy: 'Комбинированная',
+  odnoetazhnyy: 'Одноэтажный',
+  dvukhetazhnyy: 'Двухэтажный',
+  dom: 'Дом',
+  banya: 'Баня',
+  terrace: 'Терраса',
+  panorama: 'Панорамные окна',
+  'smart-home': 'Умный дом',
+  'for-rent': 'Для аренды',
+  catalog: 'В каталоге',
+  built: 'Реализован',
+}
+
+const humanize = (value) => slugLabelMap[value] || value.replaceAll('-', ' ')
+
+const formatPrice = (value) => `${numberFormat.format(value)} ₽`
+
+const Header = () => (
+  <header className="topbar glass">
+    <a className="brand" href="/">
+      <span className="brand-logo">TM</span>
+      <span>
+        <strong>TM House</strong>
+        <small>Каталог модульных домов</small>
+      </span>
+    </a>
+    <nav>
+      <a href="/catalog">Каталог</a>
+      <a href="/admin">Админка</a>
+      <a className="cta-mini" href="#lead">Заявка</a>
+    </nav>
+  </header>
+)
+
+const FilterChips = ({ title, items, value, onChange }) => {
   const selected = value ? value.split(',').filter(Boolean) : []
-  const toggle = (itemValue) => {
-    const next = selected.includes(itemValue)
-      ? selected.filter((item) => item !== itemValue)
-      : [...selected, itemValue]
-    onChange(next.join(','))
+
+  const toggle = (next) => {
+    const updated = selected.includes(next)
+      ? selected.filter((item) => item !== next)
+      : [...selected, next]
+    onChange(updated.join(','))
   }
 
   return (
-    <div className="filter-group">
+    <section className="filter-section">
       <h4>{title}</h4>
       <div className="chips">
         {items.map((item) => (
@@ -50,11 +118,39 @@ const FilterGroup = ({ title, items, value, onChange }) => {
             className={selected.includes(item.value) ? 'chip active' : 'chip'}
             onClick={() => toggle(item.value)}
           >
-            {item.value} ({item.count})
+            {humanize(item.value)} <span>{item.count}</span>
           </button>
         ))}
       </div>
-    </div>
+    </section>
+  )
+}
+
+const DualRange = ({ label, min, max, step, value, onChange, isPrice = false }) => {
+  const [start, end] = value
+  const updateStart = (next) => {
+    const parsed = Number(next)
+    if (parsed >= end) return
+    onChange([parsed, end])
+  }
+  const updateEnd = (next) => {
+    const parsed = Number(next)
+    if (parsed <= start) return
+    onChange([start, parsed])
+  }
+
+  return (
+    <section className="filter-section">
+      <h4>{label}</h4>
+      <div className="range-values">
+        <strong>{isPrice ? formatPrice(start) : `${start} м²`}</strong>
+        <strong>{isPrice ? formatPrice(end) : `${end} м²`}</strong>
+      </div>
+      <div className="dual-range">
+        <input type="range" min={min} max={max} step={step} value={start} onChange={(e) => updateStart(e.target.value)} />
+        <input type="range" min={min} max={max} step={step} value={end} onChange={(e) => updateEnd(e.target.value)} />
+      </div>
+    </section>
   )
 }
 
@@ -70,73 +166,62 @@ const LeadForm = ({ projectId = null }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...form, projectId }),
     })
-
     setStatus(response.ok ? 'success' : 'error')
-    if (response.ok) {
-      setForm({ name: '', phone: '', comment: '' })
-    }
+    if (response.ok) setForm({ name: '', phone: '', comment: '' })
   }
 
   return (
-    <form className="lead-form" onSubmit={submit}>
-      <h3>Оставить заявку</h3>
-      <input
-        aria-label="Имя"
-        placeholder="Ваше имя"
-        value={form.name}
-        onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-      />
-      <input
-        aria-label="Телефон"
-        placeholder="Телефон"
-        value={form.phone}
-        onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
-      />
-      <textarea
-        aria-label="Комментарий"
-        placeholder="Комментарий"
-        value={form.comment}
-        onChange={(e) => setForm((prev) => ({ ...prev, comment: e.target.value }))}
-      />
-      <button type="submit" disabled={status === 'loading'}>Отправить</button>
-      {status === 'success' && <p className="success">Спасибо! Мы свяжемся с вами.</p>}
-      {status === 'error' && <p className="error">Ошибка отправки. Попробуйте ещё раз.</p>}
+    <form className="lead-form glass" onSubmit={submit}>
+      <h3>Получить консультацию</h3>
+      <p>Оставьте контакт — сделаем подборку проектов и расчёт стоимости.</p>
+      <input placeholder="Ваше имя" value={form.name} onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))} />
+      <input placeholder="Телефон" value={form.phone} onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))} />
+      <textarea rows={3} placeholder="Комментарий" value={form.comment} onChange={(e) => setForm((prev) => ({ ...prev, comment: e.target.value }))} />
+      <button type="submit" className="btn" disabled={status === 'loading'}>Отправить заявку</button>
+      {status === 'success' && <p className="success">Спасибо! Заявка отправлена.</p>}
+      {status === 'error' && <p className="error">Не удалось отправить форму.</p>}
     </form>
   )
 }
 
 const ProjectCard = ({ project }) => (
-  <article className="card">
+  <article className="project-card glass">
     <img src={project.coverImage} alt={project.title} loading="lazy" />
-    <div className="card-content">
+    <div className="project-card-content">
+      <div className="badge-row">
+        <span>{humanize(project.type)}</span>
+        <span>{humanize(project.technology)}</span>
+      </div>
       <h3><a href={`/projects/${project.slug}`}>{project.title}</a></h3>
-      <p>{project.areaTotalM2} м² • {project.modulesCount || '—'} модуля • {project.roomsCount || '—'} комнаты</p>
-      <strong>от {numberFormat.format(project.priceFromRub)} ₽</strong>
+      <p>{project.areaTotalM2} м² · {project.modulesCount || '—'} мод. · {project.roomsCount || '—'} комн.</p>
+      <strong>от {formatPrice(project.priceFromRub)}</strong>
     </div>
   </article>
 )
 
 const HomePage = () => (
   <main>
-    <section className="hero">
-      <h1>Демо-сайт каталога модульных домов</h1>
-      <p>Подберите проект по площади, цене и характеристикам. Оставьте заявку в 1 клик.</p>
-      <div className="actions">
-        <a className="btn" href="/catalog">Подобрать проект</a>
-        <a className="btn ghost" href="#lead">Получить консультацию</a>
+    <section className="hero glass">
+      <div>
+        <span className="label">Демо-презентация для заказчика</span>
+        <h1>Современные модульные дома под ключ</h1>
+        <p>Лендинг + каталог с умным фильтром, живыми карточками проектов и быстрой формой заявки.</p>
+        <div className="actions">
+          <a className="btn" href="/catalog">Подобрать проект</a>
+          <a className="btn ghost" href="#lead">Рассчитать стоимость</a>
+        </div>
+      </div>
+      <div className="hero-stats">
+        <div><strong>150+</strong><span>Готовых решений</span></div>
+        <div><strong>45 дней</strong><span>Средний срок монтажа</span></div>
+        <div><strong>5 лет</strong><span>Гарантия на конструктив</span></div>
       </div>
     </section>
 
-    <section className="grid-3">
-      <div><h3>Одномодульные</h3><p>Компактные решения для дачи и аренды.</p></div>
-      <div><h3>Двухмодульные</h3><p>Баланс цены и функциональности.</p></div>
-      <div><h3>Четырёхмодульные</h3><p>Семейные дома с террасами.</p></div>
-    </section>
-
-    <section className="grid-3 muted">
-      <div><h3>Преимущества</h3><p>Быстрый монтаж, фиксированные сроки, прозрачная смета.</p></div>
-      <div><h3>Как работаем</h3><p>Подбор проекта → договор → производство → монтаж.</p></div>
-      <div><h3>FAQ</h3><p>5–8 ответов на ключевые вопросы клиента.</p></div>
+    <section className="value-grid">
+      <div className="glass"><h3>Одномодульные</h3><p>Компактные решения для дачи, сдачи и глэмпинга.</p></div>
+      <div className="glass"><h3>Двухмодульные</h3><p>Оптимальная площадь для семьи 2–4 человека.</p></div>
+      <div className="glass"><h3>Четырёхмодульные</h3><p>Просторные дома для круглогодичного проживания.</p></div>
     </section>
 
     <section id="lead">
@@ -149,88 +234,97 @@ const CatalogPage = () => {
   const [filters, setFilters] = useState(() => parseQuery(window.location.search))
   const [data, setData] = useState({ items: [], facets: {}, meta: { total: 0, page: 1, totalPages: 1 } })
   const [loading, setLoading] = useState(true)
+  const [areaRange, setAreaRange] = useState(() => parseRangeQuery(parseQuery(window.location.search).area, [40, 120]))
+  const [priceRange, setPriceRange] = useState(() => parseRangeQuery(parseQuery(window.location.search).price, [2000000, 9000000]))
+  const [debouncedQ, setDebouncedQ] = useState(filters.q)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQ(filters.q.trim()), 350)
+    return () => clearTimeout(timer)
+  }, [filters.q])
 
   useEffect(() => {
     const controller = new AbortController()
-    const nextQuery = buildQuery(filters)
-    window.history.replaceState({}, '', `/catalog?${nextQuery}`)
+    const next = {
+      ...filters,
+      q: debouncedQ,
+      area: `${areaRange[0]}-${areaRange[1]}`,
+      price: `${priceRange[0]}-${priceRange[1]}`,
+    }
+    const query = buildQuery(next)
+    window.history.replaceState({}, '', `/catalog?${query}`)
     setLoading(true)
 
-    fetch(`/api/projects?${nextQuery}`, { signal: controller.signal })
-      .then((response) => response.json())
-      .then((payload) => setData(payload))
+    fetch(`/api/projects?${query}`, { signal: controller.signal })
+      .then((res) => res.json())
+      .then(setData)
       .catch(() => {})
       .finally(() => setLoading(false))
 
     return () => controller.abort()
-  }, [filters])
+  }, [filters, areaRange, priceRange, debouncedQ])
 
   const update = (patch) => setFilters((prev) => ({ ...prev, ...patch, page: 1 }))
 
-  const showing = useMemo(() => data.items.length, [data.items])
-
   return (
     <main className="catalog-layout">
-      <aside className="filters">
-        <h2>Фильтр</h2>
-        <input
-          placeholder="Поиск по названию"
-          value={filters.q}
-          onChange={(e) => update({ q: e.target.value })}
-        />
-
-        <FilterGroup title="Технология" items={data.facets.technology || []} value={filters.technology} onChange={(value) => update({ technology: value })} />
-        <FilterGroup title="Тип" items={data.facets.type || []} value={filters.type} onChange={(value) => update({ type: value })} />
-        <FilterGroup title="Теги" items={data.facets.tags || []} value={filters.tags} onChange={(value) => update({ tags: value })} />
-
-        <div className="filter-group">
-          <h4>Площадь (м²)</h4>
-          <input placeholder="например: 40-120" value={filters.area} onChange={(e) => update({ area: e.target.value })} />
+      <aside className="filters-panel glass">
+        <div className="filters-head">
+          <h2>Умный фильтр</h2>
+          <button
+            type="button"
+            className="link-btn"
+            onClick={() => {
+              setFilters(FILTER_DEFAULTS)
+              setAreaRange([40, 120])
+              setPriceRange([2000000, 9000000])
+            }}
+          >
+            Сбросить
+          </button>
         </div>
 
-        <div className="filter-group">
-          <h4>Цена (₽)</h4>
-          <input placeholder="например: 2000000-7000000" value={filters.price} onChange={(e) => update({ price: e.target.value })} />
-        </div>
+        <input className="search" placeholder="Поиск по названию" value={filters.q} onChange={(e) => update({ q: e.target.value })} />
+        <DualRange label="Площадь" min={RANGE_LIMITS.area.min} max={RANGE_LIMITS.area.max} step={RANGE_LIMITS.area.step} value={areaRange} onChange={setAreaRange} />
+        <DualRange label="Цена" min={RANGE_LIMITS.price.min} max={RANGE_LIMITS.price.max} step={RANGE_LIMITS.price.step} value={priceRange} onChange={setPriceRange} isPrice />
 
-        <div className="filter-group">
+        <FilterChips title="Технология" items={data.facets.technology || []} value={filters.technology} onChange={(value) => update({ technology: value })} />
+        <FilterChips title="Тип объекта" items={data.facets.type || []} value={filters.type} onChange={(value) => update({ type: value })} />
+        <FilterChips title="Особенности" items={data.facets.tags || []} value={filters.tags} onChange={(value) => update({ tags: value })} />
+
+        <section className="filter-section">
           <h4>Сортировка</h4>
           <select value={filters.sort} onChange={(e) => update({ sort: e.target.value })}>
             <option value="newest">Сначала новые</option>
-            <option value="price_asc">Цена по возрастанию</option>
-            <option value="price_desc">Цена по убыванию</option>
-            <option value="area_asc">Площадь по возрастанию</option>
-            <option value="area_desc">Площадь по убыванию</option>
+            <option value="price_asc">Сначала дешевле</option>
+            <option value="price_desc">Сначала дороже</option>
+            <option value="area_asc">Площадь ↑</option>
+            <option value="area_desc">Площадь ↓</option>
           </select>
-        </div>
-
-        <button
-          type="button"
-          className="btn ghost"
-          onClick={() => setFilters({
-            technology: '', type: '', tags: '', rooms: '', status: '', area: '', price: '', hasTerrace: '', q: '', sort: 'newest', page: 1, limit: 12,
-          })}
-        >
-          Сбросить всё
-        </button>
+        </section>
       </aside>
 
       <section>
-        <header className="catalog-head">
-          <h1>Каталог проектов</h1>
-          <p>Найдено: {data.meta.total} • Показано: {showing}</p>
+        <header className="catalog-head glass">
+          <div>
+            <h1>Каталог проектов</h1>
+            <p>{data.meta.total} проектов по вашим параметрам</p>
+          </div>
+          <button className="btn" type="button">Показать {data.items.length} проектов</button>
         </header>
 
-        {loading && <p>Загрузка...</p>}
+        {loading && <div className="glass block">Загрузка проектов…</div>}
+
         {!loading && data.items.length === 0 && (
-          <div className="empty">
-            <p>0 проектов по выбранным фильтрам.</p>
-            <button className="btn" type="button" onClick={() => update({ area: '', price: '', technology: '', type: '', tags: '' })}>Расширить диапазон</button>
+          <div className="glass block empty">
+            <h3>Ничего не найдено</h3>
+            <p>Попробуйте расширить диапазон площади и цены или очистить фильтр.</p>
+            <button className="btn" onClick={() => setFilters(FILTER_DEFAULTS)}>Сбросить фильтры</button>
           </div>
         )}
 
         <div className="cards-grid">
-          {data.items.map((project) => <ProjectCard key={project.id} project={project} />)}
+          {data.items.map((item) => <ProjectCard key={item.id} project={item} />)}
         </div>
 
         {data.meta.page < data.meta.totalPages && (
@@ -250,11 +344,11 @@ const ProjectPage = ({ slug }) => {
     fetch(`/api/projects/${slug}`).then((res) => res.json()).then(setProject)
   }, [slug])
 
-  if (!project) return <main><p>Загрузка проекта...</p></main>
+  if (!project) return <main><div className="glass block">Загрузка проекта…</div></main>
 
   return (
     <main className="project-page">
-      <section className="project-hero">
+      <section className="project-hero glass">
         <img src={project.coverImage} alt={project.title} />
         <div>
           <h1>{project.title}</h1>
@@ -263,22 +357,17 @@ const ProjectPage = ({ slug }) => {
             <li>Площадь: {project.areaTotalM2} м²</li>
             <li>Модули: {project.modulesCount || '—'}</li>
             <li>Комнаты: {project.roomsCount || '—'}</li>
-            <li>Технология: {project.technology}</li>
-            <li>Цена от: {numberFormat.format(project.priceFromRub)} ₽</li>
+            <li>Технология: {humanize(project.technology)}</li>
+            <li>Цена от: {formatPrice(project.priceFromRub)}</li>
           </ul>
         </div>
       </section>
 
-      <section>
-        <h2>О проекте</h2>
-        <p>{project.descriptionFull}</p>
-      </section>
+      <section className="glass block"><h2>О проекте</h2><p>{project.descriptionFull}</p></section>
 
       <section>
         <h2>Похожие проекты</h2>
-        <div className="cards-grid">
-          {(project.similar || []).map((item) => <ProjectCard key={item.id} project={item} />)}
-        </div>
+        <div className="cards-grid">{(project.similar || []).map((item) => <ProjectCard key={item.id} project={item} />)}</div>
       </section>
 
       <LeadForm projectId={project.id} />
@@ -305,9 +394,7 @@ const AdminPage = () => {
   const login = async (event) => {
     event.preventDefault()
     const response = await fetch('/api/admin/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(auth),
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(auth),
     })
     const payload = await response.json()
     if (payload.token) {
@@ -321,49 +408,21 @@ const AdminPage = () => {
     const endpoint = editor.id ? `/api/admin/projects/${editor.id}` : '/api/admin/projects'
     await fetch(endpoint, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ ...editor, tags: (editor.tags || '').split(',').map((x) => x.trim()).filter(Boolean) }),
     })
     setEditor(null)
     load()
   }
 
-  const remove = async (id) => {
-    await fetch(`/api/admin/projects/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
-    load()
-  }
-
-  const doExport = async (format) => {
-    const response = await fetch(`/api/admin/projects/export?format=${format}`, { headers: { Authorization: `Bearer ${token}` } })
-    const payload = await response.json()
-    alert(payload.content)
-  }
-
-  const doImport = async (format) => {
-    const content = prompt(`Вставьте ${format.toUpperCase()} контент`) || ''
-    if (!content) return
-    await fetch(`/api/admin/projects/import?format=${format}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ content }),
-    })
-    load()
-  }
-
   if (!token) {
     return (
       <main>
-        <h1>Admin Login</h1>
-        <form className="lead-form" onSubmit={login}>
+        <form className="lead-form glass" onSubmit={login}>
+          <h2>Вход в админку</h2>
           <input value={auth.username} onChange={(e) => setAuth((p) => ({ ...p, username: e.target.value }))} />
           <input type="password" value={auth.password} onChange={(e) => setAuth((p) => ({ ...p, password: e.target.value }))} />
-          <button type="submit">Войти</button>
+          <button className="btn" type="submit">Войти</button>
         </form>
       </main>
     )
@@ -371,45 +430,27 @@ const AdminPage = () => {
 
   return (
     <main>
-      <header className="admin-head">
-        <h1>Админка проектов</h1>
-        <div>
-          <button className="btn" onClick={() => setEditor({ title: '', slug: '', areaTotalM2: 0, priceFromRub: 0, technology: 'karkasno-modulnaya', type: 'dom', status: 'catalog', tags: '' })}>Новый проект</button>
-          <button className="btn ghost" onClick={() => doExport('json')}>Export JSON</button>
-          <button className="btn ghost" onClick={() => doExport('csv')}>Export CSV</button>
-          <button className="btn ghost" onClick={() => doImport('json')}>Import JSON</button>
-          <button className="btn ghost" onClick={() => doImport('csv')}>Import CSV</button>
-        </div>
-      </header>
-
+      <header className="catalog-head glass"><h1>Админка проектов</h1><button className="btn" onClick={() => setEditor({ title: '', slug: '', areaTotalM2: 0, priceFromRub: 0, tags: '' })}>Новый</button></header>
       {editor && (
-        <div className="editor">
+        <div className="editor glass block">
           <input placeholder="Название" value={editor.title} onChange={(e) => setEditor((p) => ({ ...p, title: e.target.value }))} />
           <input placeholder="Slug" value={editor.slug} onChange={(e) => setEditor((p) => ({ ...p, slug: e.target.value }))} />
           <input placeholder="Площадь" value={editor.areaTotalM2} onChange={(e) => setEditor((p) => ({ ...p, areaTotalM2: Number(e.target.value) }))} />
           <input placeholder="Цена" value={editor.priceFromRub} onChange={(e) => setEditor((p) => ({ ...p, priceFromRub: Number(e.target.value) }))} />
-          <input placeholder="Теги (через запятую)" value={editor.tags} onChange={(e) => setEditor((p) => ({ ...p, tags: e.target.value }))} />
+          <input placeholder="Теги" value={editor.tags} onChange={(e) => setEditor((p) => ({ ...p, tags: e.target.value }))} />
           <button className="btn" onClick={save}>Сохранить</button>
-          <button className="btn ghost" onClick={() => setEditor(null)}>Отмена</button>
         </div>
       )}
-
-      <table className="admin-table">
-        <thead>
-          <tr><th>Название</th><th>Статус</th><th>Площадь</th><th>Цена</th><th>Теги</th><th /></tr>
-        </thead>
+      <table className="admin-table glass">
+        <thead><tr><th>Название</th><th>Площадь</th><th>Цена</th><th>Теги</th><th /></tr></thead>
         <tbody>
           {projects.map((project) => (
             <tr key={project.id}>
               <td>{project.title}</td>
-              <td>{project.status}</td>
               <td>{project.areaTotalM2} м²</td>
-              <td>{numberFormat.format(project.priceFromRub)} ₽</td>
+              <td>{formatPrice(project.priceFromRub)}</td>
               <td>{(project.tags || []).join(', ')}</td>
-              <td>
-                <button onClick={() => setEditor({ ...project, tags: (project.tags || []).join(', ') })}>Edit</button>
-                <button onClick={() => remove(project.id)}>Delete</button>
-              </td>
+              <td><button onClick={() => setEditor({ ...project, tags: (project.tags || []).join(', ') })}>Edit</button></td>
             </tr>
           ))}
         </tbody>
@@ -418,20 +459,9 @@ const AdminPage = () => {
   )
 }
 
-const Header = () => (
-  <header className="topbar">
-    <a href="/">Demo House</a>
-    <nav>
-      <a href="/catalog">Каталог</a>
-      <a href="/admin">Админка</a>
-    </nav>
-  </header>
-)
-
 export default function App() {
   const path = window.location.pathname
   let page = <HomePage />
-
   if (path === '/catalog') page = <CatalogPage />
   if (path.startsWith('/projects/')) page = <ProjectPage slug={path.replace('/projects/', '')} />
   if (path === '/admin') page = <AdminPage />
