@@ -314,6 +314,15 @@ select:focus,
   box-shadow: inset 0 0 0 2px rgba(122, 91, 59, .25);
 }
 .request-form small { color: var(--muted); }
+.form-disclaimer {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.form-disclaimer a,
+.footer a {
+  text-decoration: underline;
+}
 
 .lead-grid {
   display: grid;
@@ -429,6 +438,15 @@ input[type='range'] { width: 100%; accent-color: #7b5e3b; }
   gap: 14px;
 }
 .about-grid article { padding: 20px; }
+
+.privacy-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px;
+}
+.privacy-page h2 {
+  margin-top: 20px;
+}
 
 @media (max-width: 1040px) {
   .split-section,
