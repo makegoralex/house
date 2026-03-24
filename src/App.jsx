@@ -80,13 +80,14 @@ const humanize = (value) => slugLabelMap[value] || value.replaceAll('-', ' ')
 
 const formatPrice = (value) => `${numberFormat.format(value)} ₽`
 
-const Header = () => {
+const Header = ({ pageTitle }) => {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <header className="topbar">
       <a className="brand" href="/">
         <strong className="brand-title">tmhouse</strong>
+        <span className="brand-page">{pageTitle}</span>
       </a>
       <button className="burger" type="button" onClick={() => setMenuOpen((prev) => !prev)} aria-label="Открыть меню">
         <span />
@@ -101,6 +102,16 @@ const Header = () => {
     </header>
   )
 }
+
+const SiteFooter = () => (
+  <footer className="footer">
+    <h3>Контакты</h3>
+    <p><strong>ООО «ТМДОМ»</strong> · ИНН 5836897858 · КПП 583601001</p>
+    <p>+7 (905) 365-47-39 · +7 (927) 377-54-97</p>
+    <p>Пензенская обл., Пензенский район, село Засечное, ул. Механизаторов, 22А</p>
+    <small>2023 © Все права защищены. Политика конфиденциальности.</small>
+  </footer>
+)
 
 const FilterChips = ({ title, items, value, onChange }) => {
   const selected = value ? value.split(',').filter(Boolean) : []
@@ -322,13 +333,6 @@ const HomePage = () => {
         </aside>
       </section>
 
-      <footer className="footer">
-        <h3>Контакты</h3>
-        <p><strong>ООО «ТМДОМ»</strong> · ИНН 5836897858 · КПП 583601001</p>
-        <p>+7 (905) 365-47-39 · +7 (927) 377-54-97</p>
-        <p>Пензенская обл., Пензенский район, село Засечное, ул. Механизаторов, 22А</p>
-        <small>2023 © Все права защищены. Политика конфиденциальности.</small>
-      </footer>
     </main>
   )
 }
@@ -600,16 +604,34 @@ const AdminPage = () => {
 
 export default function App() {
   const path = window.location.pathname
+  let pageTitle = 'Главная'
   let page = <HomePage />
-  if (path === '/catalog') page = <CatalogPage />
-  if (path === '/about') page = <AboutPage />
-  if (path.startsWith('/projects/')) page = <ProjectPage slug={path.replace('/projects/', '')} />
-  if (path === '/admin') page = <AdminPage />
+  if (path === '/catalog') {
+    page = <CatalogPage />
+    pageTitle = 'Каталог проектов'
+  }
+  if (path === '/about') {
+    page = <AboutPage />
+    pageTitle = 'О компании'
+  }
+  if (path.startsWith('/projects/')) {
+    page = <ProjectPage slug={path.replace('/projects/', '')} />
+    pageTitle = 'Карточка проекта'
+  }
+  if (path === '/admin') {
+    page = <AdminPage />
+    pageTitle = 'Админ-панель'
+  }
+
+  useEffect(() => {
+    document.title = `${pageTitle} | TMHouse`
+  }, [pageTitle])
 
   return (
     <>
-      <Header />
+      <Header pageTitle={pageTitle} />
       {page}
+      <SiteFooter />
     </>
   )
 }
