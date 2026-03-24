@@ -109,7 +109,10 @@ const SiteFooter = () => (
     <p><strong>ООО «ТМДОМ»</strong> · ИНН 5836897858 · КПП 583601001</p>
     <p>+7 (905) 365-47-39 · +7 (927) 377-54-97</p>
     <p>Пензенская обл., Пензенский район, село Засечное, ул. Механизаторов, 22А</p>
-    <small>2023 © Все права защищены. Политика конфиденциальности.</small>
+    <small>
+      2023 © Все права защищены.{' '}
+      <a href="/privacy">Политика конфиденциальности</a>.
+    </small>
   </footer>
 )
 
@@ -193,6 +196,10 @@ const LeadForm = ({ projectId = null }) => {
       <input placeholder="Ваше имя" value={form.name} onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))} />
       <input placeholder="Телефон" value={form.phone} onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))} />
       <textarea rows={3} placeholder="Комментарий" value={form.comment} onChange={(e) => setForm((prev) => ({ ...prev, comment: e.target.value }))} />
+      <small className="form-disclaimer">
+        Нажимая кнопку, вы соглашаетесь с{' '}
+        <a href="/privacy">политикой конфиденциальности</a> и обработкой файлов cookie.
+      </small>
       <button type="submit" className="btn" disabled={status === 'loading'}>Отправить заявку</button>
       {status === 'success' && <p className="success">Спасибо! Заявка отправлена.</p>}
       {status === 'error' && <p className="error">Не удалось отправить форму.</p>}
@@ -319,6 +326,10 @@ const HomePage = () => {
           <input placeholder="Ваш телефон*" />
           <input type="file" accept=".jpg,.png" />
           <small>* Принимаем .jpg/.png до 2 Мб.</small>
+          <small className="form-disclaimer">
+            Отправляя форму, вы принимаете{' '}
+            <a href="/privacy">политику конфиденциальности</a> и использование cookie.
+          </small>
           <button className="btn" type="button">Получить подборку проектов</button>
         </form>
       </section>
@@ -480,6 +491,38 @@ const AboutPage = () => (
   </main>
 )
 
+const PrivacyPage = () => (
+  <main className="privacy-page">
+    <section className="glass block">
+      <h1>Политика конфиденциальности</h1>
+      <p>
+        Это шаблонный текст политики конфиденциальности. Он создан как временный пример и должен быть
+        заменён на финальную юридическую версию перед публикацией.
+      </p>
+      <h2>1. Какие данные мы собираем</h2>
+      <p>
+        Мы можем собирать данные, которые вы указываете в формах на сайте: имя, телефон, комментарий,
+        а также техническую информацию о посещении сайта.
+      </p>
+      <h2>2. Для чего используются данные</h2>
+      <p>
+        Данные используются для связи с вами, подготовки консультации, улучшения качества сервиса и
+        корректной работы сайта.
+      </p>
+      <h2>3. Предупреждение о cookie</h2>
+      <p>
+        Сайт использует cookie-файлы для аналитики, сохранения пользовательских настроек и корректной
+        работы отдельных функций. Продолжая пользоваться сайтом, вы соглашаетесь на использование cookie.
+      </p>
+      <h2>4. Контакты</h2>
+      <p>
+        По вопросам обработки персональных данных вы можете обратиться к нам по телефонам, указанным в
+        разделе «Контакты».
+      </p>
+    </section>
+  </main>
+)
+
 const ProjectPage = ({ slug }) => {
   const [project, setProject] = useState(null)
 
@@ -613,6 +656,10 @@ export default function App() {
   if (path === '/about') {
     page = <AboutPage />
     pageTitle = 'О компании'
+  }
+  if (path === '/privacy') {
+    page = <PrivacyPage />
+    pageTitle = 'Политика конфиденциальности'
   }
   if (path.startsWith('/projects/')) {
     page = <ProjectPage slug={path.replace('/projects/', '')} />
