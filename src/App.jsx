@@ -1,177 +1,184 @@
-const contractItems = [
-  'Брендбук',
-  'Логотип и вариации',
-  'Цвета и шрифты',
-  'Паттерны и графические элементы',
-  'Стикерпак 10–12 штук',
-  'Медиашаблоны для соцсетей',
-  '20 оформленных публикационных блоков',
-  'Визуальная база для мерча',
-  'Дизайн лендинга',
-  'Внедрение на Tilda',
-]
+import { useMemo, useState } from 'react'
 
-const concepts = [
+const stats = ['2 дня', '20+ кейсов', '300+ участников', '∞ идей']
+const navItems = ['О хакатоне', 'Кейсы', 'Программа', 'Участники', 'Партнеры']
+
+const landingVariants = [
   {
-    title: 'Наукоград 2.0',
-    idea: 'Обнинск как первый наукоград + современные цифровые команды. Соединяем научные схемы, координаты и интерфейсы.',
-    palette: ['#0B1D3A', '#111827', '#2563EB', '#FFFFFF', '#B8FF2E'],
-    graphics: ['Сетки', 'Координаты', 'Линии связи', 'Атомные орбиты', 'Пиктограммы задач'],
-    plus: 'Серьезно и технологично для администрации и партнеров.',
-    minus: 'Может быть менее эмоционально без живых акцентов.',
+    id: 'dark-interface',
+    tab: 'Вариант 1 — Темный интерфейс',
+    cardTitle: 'Темный интерфейс города',
+    mood: 'Статусно, технологично',
+    description: 'Интерфейс управления городской системой: темная карта, узлы, маршруты и акцент на технологичность.',
+    whatChoose: 'Выбираем основу главного экрана, плотную сетку, статусные карточки TEAM/CASE/ROUTE/SOLUTION и сильный “дорогой” тон.',
+    strengths: 'Лучший вариант для основного сайта и партнерской презентации.',
+    risks: 'Может восприниматься мрачновато без светлых пауз.',
+    recommendedFor: 'Основной лендинг и официальная коммуникация.',
+    previewClass: 'preview-dark',
   },
   {
-    title: 'Код города',
-    badge: 'Рекомендуем',
-    idea: 'Город становится интерфейсом: маршруты, кейсы и команды как “переписывание кода” городской среды.',
-    palette: ['#111827', '#FF6B2C', '#2563EB', '#F3F4F6', '#2EE6A6'],
-    graphics: ['Карты и маршруты', 'Пиксельные маркеры', 'Блоки кода', 'Карточки кейсов', 'Стикерные плашки'],
-    plus: 'Самая сильная концепция для хакатона: понятно, молодежно, масштабируемо.',
-    minus: 'Важно аккуратно зафиксировать связь с Обнинском, чтобы не стало слишком общим.',
+    id: 'light-interface',
+    tab: 'Вариант 2 — Светлый интерфейс',
+    cardTitle: 'Светлый интерфейс',
+    mood: 'Чисто, современно, понятно',
+    description: 'Белый фон, легкая сетка и воздушная композиция для администраций, партнеров и широкой аудитории.',
+    whatChoose: 'Выбираем чистоту, тонкие маршруты, карточки с обводкой и дружелюбную подачу без киберпанк-перегруза.',
+    strengths: 'Универсально и безопасно для согласования.',
+    risks: 'Меньше вау-эффекта, чем у темных/постерных решений.',
+    recommendedFor: 'Официальные разделы, презентации и документы.',
+    previewClass: 'preview-light',
   },
   {
-    title: 'Реактор идей',
-    idea: 'Отсылка к научной истории города: энергия, импульс и динамика команд в одном визуальном языке.',
-    palette: ['#090B12', '#FF6B2C', '#7C3AED', '#FFFFFF', '#00D4FF'],
-    graphics: ['Орбиты', 'Частицы', 'Световые линии', 'Круговые композиции', 'Маскот «Искра»'],
-    plus: 'Ярко, событийно, запоминается.',
-    minus: 'Нельзя уходить в слишком буквальную «атомную» тему.',
+    id: 'poster',
+    tab: 'Вариант 3 — Постерный стиль',
+    cardTitle: 'Постерный стиль',
+    mood: 'Смело, молодежно, событийно',
+    description: 'Крупная типографика, контрастные цветовые плоскости, стикерная пластика и эффект афиши.',
+    whatChoose: 'Выбираем самые яркие плакатные акценты и энергетику для соцсетей и анонсов.',
+    strengths: 'Максимальная заметность и вирусность контента.',
+    risks: 'Для части заказчиков может быть слишком смело.',
+    recommendedFor: 'Соцсети, афиши, мерч и промо-баннеры.',
+    previewClass: 'preview-poster',
+  },
+  {
+    id: 'dynamic-white',
+    tab: 'Вариант 4 — Динамичный белый',
+    cardTitle: 'Динамичный белый',
+    mood: 'Быстро, живо, дружелюбно',
+    description: 'Много воздуха, диагональные маршруты и ощущение скорости команды от идеи к решению.',
+    whatChoose: 'Выбираем динамику, диагонали и активные лаймовые маркеры без перегруза темными блоками.',
+    strengths: 'Сильная молодежная подача и хорошая читабельность.',
+    risks: 'Менее статусно, чем темные версии.',
+    recommendedFor: 'Молодежные блоки, вовлекающие экраны, stories.',
+    previewClass: 'preview-dynamic',
+  },
+  {
+    id: 'dashboard',
+    tab: 'Вариант 5 — Dashboard / система',
+    cardTitle: 'Dashboard / система',
+    mood: 'Продуктово, IT-first',
+    description: 'Хакатон как цифровая система: статусы, панели, активные команды и маршрут от идеи до питча.',
+    whatChoose: 'Выбираем интерфейсную метафору, панели состояния и логику “event platform”.',
+    strengths: 'Лучше всего подчеркивает IT-суть хакатона.',
+    risks: 'Может быть сложновато для части аудитории без упрощений.',
+    recommendedFor: 'Техничные страницы и экраны для участников.',
+    previewClass: 'preview-dashboard',
+  },
+  {
+    id: 'obninsk',
+    tab: 'Вариант 6 — Обнинск / наукоград',
+    cardTitle: 'Обнинск / наукоград',
+    mood: 'Городски, официально, уверенно',
+    description: 'Фокус на связи с городом и статусом первого наукограда: среда + цифровые маршруты + команда.',
+    whatChoose: 'Выбираем блок про Обнинск, мягкую палитру и аккуратные научные отсылки без визуального шума.',
+    strengths: 'Максимально понятная связка с городом для заказчика.',
+    risks: 'Может быть менее молодежно, если не добавить динамики.',
+    recommendedFor: 'Официальные коммуникации и партнерские страницы.',
+    previewClass: 'preview-obninsk',
   },
 ]
 
-const stickerPhrases = [
-  'Я в потоке', 'Дедлайн близко', 'Собрали прототип', 'Есть идея', 'Фиксим баг',
-  'Питч готов', 'Команда, пушим!', 'Нужен кофе', 'Мы в финале', 'Кейс принят',
-]
+function LeopardMark() {
+  return <div className="leopard-mark" aria-hidden>СНЕЖНЫЙ БАРС</div>
+}
 
-const siteStructure = [
-  'Главный экран', 'О хакатоне', 'Для кого', 'Как проходит', 'Кейсы / направления',
-  'Программа', 'Призы / возможности', 'Партнеры', 'FAQ', 'Форма заявки', 'Контакты',
-]
+function VariantPreview({ variant }) {
+  return (
+    <section className={`variant-preview ${variant.previewClass}`}>
+      <div className="vp-header">
+        <div className="logo">ОХ · Обнинский Хакатон</div>
+        <nav>{navItems.map((item) => <span key={item}>{item}</span>)}</nav>
+        <button>Подать заявку</button>
+      </div>
 
-const deliverables = [
-  'Главный экран сайта', 'Пост VK / Telegram', 'Сторис-анонс', 'Обложка программы',
-  'Бейдж участника', 'Стикеры', 'Футболка / мерч', 'Ланъярд', 'Карточка команды', 'Карточка кейса',
-]
+      <div className="vp-body">
+        <div>
+          <h3>Код города.<br />Решаем вместе.</h3>
+          <p>Хакатон для тех, кто создает решения для города, технологий и людей.</p>
+          <div className="cta-row">
+            <a href="#">Подать заявку</a>
+            <a href="#" className="ghost">Смотреть кейсы</a>
+          </div>
+        </div>
+        <div className="visual-zone">
+          <LeopardMark />
+          <div className="route route-a" />
+          <div className="route route-b" />
+          <div className="node n1" />
+          <div className="node n2" />
+          <div className="node n3" />
+        </div>
+      </div>
+
+      <div className="stats-row">{stats.map((item) => <article key={item}>{item}</article>)}</div>
+      <div className="benefits-row">
+        <article>TEAM_ACTIVE</article><article>CASE_FLOW</article><article>ROUTE_01</article><article>SOLUTION_READY</article>
+      </div>
+      <div className="mobile-preview-note">Mobile preview: адаптация карточек и CTA в один столбец.</div>
+    </section>
+  )
+}
+
+export default function App() {
+  const [activeId, setActiveId] = useState(landingVariants[0].id)
+  const active = useMemo(() => landingVariants.find((v) => v.id === activeId) || landingVariants[0], [activeId])
 
 export default function App() {
   return (
-    <main className="landing">
-      <header className="hero section">
-        <div className="pattern" aria-hidden />
-        <div className="hero-grid">
-          <div>
-            <p className="eyebrow">Предварительная концепция визуального направления</p>
-            <h1>Обнинский Хакатон: айдентика для молодежного технологического события первого наукограда</h1>
-            <p className="lead">Разрабатываем визуальную систему, которая связывает науку, городскую идентичность Обнинска и энергию молодых команд: от сайта и соцсетей до стикеров, программы и мерча.</p>
-            <div className="cta-row">
-              <a href="#concepts" className="btn">Смотреть концепции</a>
-              <a href="#contract" className="btn ghost">Что войдет в брендбук</a>
-            </div>
-          </div>
-          <div className="mock-stack">
-            <div className="mock badge">бейдж · ОХ</div>
-            <div className="mock screen">Главный экран сайта</div>
-            <div className="mock sticker">стикер “Команда, пушим!”</div>
-          </div>
-        </div>
-      </header>
-
-      <section id="contract" className="section">
-        <h2>Что нужно создать по контракту</h2>
-        <p>Контракт требует единую визуальную систему для сайта, соцсетей, стикеров, публикационных материалов, программы и возможного мерча.</p>
-        <div className="card-grid">
-          {contractItems.map((item) => <article key={item} className="card">{item}</article>)}
+    <main className="options-page">
+      <section className="heading">
+        <p className="kicker">Варианты лендинга · согласование визуальной концепции</p>
+        <h1>Обнинский Хакатон — Код города</h1>
+        <p>Город становится интерфейсом: маршруты, кейсы и команды подаются как цифровая система, в которой участники двигаются от идеи к решению.</p>
+        <div className="palette">
+          {['#0B1D3A', '#111827', '#2563EB', '#FFFFFF', '#B8FF2E'].map((color) => <span key={color}><i style={{ background: color }} />{color}</span>)}
         </div>
       </section>
 
-      <section className="section">
-        <h2>Не просто “хакатон про IT”, а событие города-науки</h2>
-        <p>Визуальная система показывает точку соединения трех смыслов: <strong>Обнинск</strong> (научная история и инженерная культура), <strong>молодежь</strong> (команды, энергия, коммуникация), <strong>технологии</strong> (код, прототипы, цифровая среда). Задача — сделать проект узнаваемым, живым и применимым на всех носителях.</p>
+      <section className="variant-switcher">
+        <div className="tabs" role="tablist" aria-label="Варианты лендинга">
+          {landingVariants.map((v) => (
+            <button key={v.id} className={v.id === activeId ? 'active' : ''} onClick={() => setActiveId(v.id)}>{v.tab}</button>
+          ))}
+        </div>
+        <select value={activeId} onChange={(e) => setActiveId(e.target.value)} aria-label="Выбрать вариант" className="mobile-select">
+          {landingVariants.map((v) => <option key={v.id} value={v.id}>{v.tab}</option>)}
+        </select>
+
+        <VariantPreview variant={active} />
+
+        <article className="variant-meta">
+          <div className="meta-head">
+            <h2>{active.cardTitle}</h2>
+            {(active.id === 'dark-interface' || active.id === 'dashboard') && <span className="recommended">Рекомендуемый вариант</span>}
+          </div>
+          <p><strong>Настроение:</strong> {active.mood}</p>
+          <p>{active.description}</p>
+          <h3>Что выбираем в этом варианте</h3>
+          <p>{active.whatChoose}</p>
+        </article>
       </section>
 
-      <section id="concepts" className="section concepts">
-        <h2>3 концепции айдентики</h2>
-        {concepts.map((concept) => (
-          <article className="concept" key={concept.title}>
-            <div className="concept-head">
-              <h3>{concept.title}</h3>
-              {concept.badge && <span className="tag">{concept.badge}</span>}
-            </div>
-            <p>{concept.idea}</p>
-            <div className="palette">
-              {concept.palette.map((color) => (
-                <div key={color} className="swatch" style={{ background: color }}>
-                  <span>{color}</span>
-                </div>
+      <section className="compare">
+        <h2>Сравнение вариантов</h2>
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Вариант</th><th>Настроение</th><th>Сильная сторона</th><th>Риск</th><th>Где использовать</th></tr></thead>
+            <tbody>
+              {landingVariants.map((v) => (
+                <tr key={v.id}><td>{v.cardTitle}</td><td>{v.mood}</td><td>{v.strengths}</td><td>{v.risks}</td><td>{v.recommendedFor}</td></tr>
               ))}
-            </div>
-            <div className="chips">{concept.graphics.map((g) => <span key={g}>{g}</span>)}</div>
-            <p><strong>Плюс:</strong> {concept.plus}</p>
-            <p><strong>Минус:</strong> {concept.minus}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="section recommendation">
-        <h2>Мы предлагаем развивать направление “Код города”</h2>
-        <ul>
-          <li>Связывает хакатон с городом, а не только с IT.</li>
-          <li>Понятная метафора: участники создают решения для среды, людей и будущего города.</li>
-          <li>Легко переносится на сайт, соцсети, программу, стикеры и мерч.</li>
-          <li>Сохраняет научные отсылки к Обнинску без визуального перегруза.</li>
-        </ul>
-        <div className="slogans">
-          <span>Код города начинается здесь</span>
-          <span>Собери команду. Найди решение. Запусти город будущего</span>
-          <span>Хакатон первого наукограда</span>
-          <span>Идеи, которые становятся прототипами</span>
-          <span>Обнинск. Команды. Код. Решения</span>
-        </div>
-      </section>
-
-      <section className="section">
-        <h2>Минимальная айдентика для демонстрации</h2>
-        <div className="identity-grid">
-          <article className="card"><h3>Логотип-направление</h3><p>Текстовый знак «Обнинский Хакатон» + короткая версия «ОХ», построенная на модулях, пикселях и координатной сетке.</p></article>
-          <article className="card"><h3>Шрифты</h3><p>Заголовки: Manrope / Unbounded / Geologica. Текст: Inter / Manrope. Только бесплатные лицензии.</p></article>
-          <article className="card"><h3>Графические элементы</h3><p>Карточки кейсов, линии маршрутов, пиксельные маркеры, стикерные плашки, элементы бейджа и паттерны из скобок/точек/линий.</p></article>
-        </div>
-      </section>
-
-      <section className="section">
-        <h2>Как это будет работать на носителях</h2>
-        <div className="mock-grid">
-          {deliverables.map((item) => <div key={item} className="mock-item">{item}</div>)}
-        </div>
-      </section>
-
-      <section className="section">
-        <h2>Стикерпак 10–12 штук</h2>
-        <p>Маскот-концепт: технологичный символ (Искра / Курсор / Пиксель / Модуль), который выражает эмоции участников хакатона.</p>
-        <div className="chips">{stickerPhrases.map((phrase) => <span key={phrase}>{phrase}</span>)}</div>
-      </section>
-
-      <section className="section">
-        <h2>Структура будущего сайта хакатона</h2>
-        <div className="card-grid">
-          {siteStructure.map((item, i) => <article key={item} className="card">{String(i + 1).padStart(2, '0')} · {item}</article>)}
-        </div>
-        <p className="note">Форма заявки в рабочей версии сайта: команда, вуз, город, капитан, телефон, email, участники, контакты участников, согласие на обработку персональных данных.</p>
-      </section>
-
-      <section className="section final">
-        <h2>Что согласовываем на этом этапе</h2>
-        <div className="chips">
-          <span>Общую метафору айдентики</span>
-          <span>Основное визуальное направление</span>
-          <span>Наличие / отсутствие маскота</span>
-          <span>Цветовое настроение</span>
-          <span>Стиль сайта и соцсетей</span>
-          <span>Принцип стикеров и мерча</span>
+            </tbody>
+          </table>
         </div>
         <button className="btn">Согласовать направление “Код города”</button>
         <p className="note">Это предварительная концепция визуального направления. После согласования выбранного подхода на его основе разрабатываются финальные элементы брендбука, медиашаблоны, стикерпак и дизайн действующего сайта.</p>
+      </section>
+
+      <section className="recommend-block">
+        <h2>Рекомендуемая сборка</h2>
+        <p><strong>Основа</strong> — Вариант 1 или 5, <strong>светлые блоки</strong> — из Варианта 2/4, <strong>городская связка</strong> — из Варианта 6, <strong>соцсети и афиши</strong> — из Варианта 3.</p>
+        <p>Итог: не выбираем один экран целиком, а собираем финальный стиль из сильных частей каждой версии.</p>
       </section>
     </main>
   )
