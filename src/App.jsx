@@ -8,14 +8,16 @@ const variants = [
 
 const stats = ['2 дня', '20+ кейсов', '300+ участников', '∞ идей']
 const features = ['РЕАЛЬНЫЕ КЕЙСЫ', 'ЭКСПЕРТЫ', 'ПРИЗЫ, СТАЖИРОВКИ', 'СООБЩЕСТВО']
-const ASSET_BASE = 'https://house.yago-app.ru/uploads'
+const BARS_URL = 'https://iimg.su/i/QJ2qsC'
+const LOGO1_URL = 'https://iimg.su/i/TXn8Eh'
+const LOGO2_URL = 'https://iimg.su/i/EKZmLd'
 
 function Header({ dark = false }) {
   return (
     <div className={`h ${dark ? 'd' : ''}`}>
       <div className="logo">OX <span>ОБНИНСКИЙ ХАКАТОН</span></div>
       <div className="menu">О хакатоне · Кейсы · Программа · Участники · Партнеры</div>
-      <div className="head-right"><img className="head-bars" src={`${ASSET_BASE}/bars.png`} alt="Барс" /><button>Подать заявку</button></div>
+      <div className="head-right"><img className="head-bars" src={BARS_URL} alt="Барс" /><button>Подать заявку</button></div>
     </div>
   )
 }
@@ -42,7 +44,7 @@ function Foot({ dark=false }) {
 function Leopard({ mode }) {
   return (
     <div className={`leo ${mode}`}>
-      <img src={`${ASSET_BASE}/bars.png`} alt="Снежный барс" loading="lazy" />
+      <img src={BARS_URL} alt="Снежный барс" loading="lazy" />
     </div>
   )
 }
@@ -97,8 +99,8 @@ export default function App() {
           <h3>Варианты логотипа</h3>
           <p>Ниже — загруженные варианты логотипа для согласования после брендблоков.</p>
           <div className="logo-grid">
-            <figure><img src={`${ASSET_BASE}/logo1.png`} alt="Логотип вариант 1" /><figcaption>Вариант логотипа 1</figcaption></figure>
-            <figure><img src={`${ASSET_BASE}/logo2.png`} alt="Логотип вариант 2" /><figcaption>Вариант логотипа 2</figcaption></figure>
+            <figure><img src={LOGO1_URL} alt="Логотип вариант 1" /><figcaption>Вариант логотипа 1</figcaption></figure>
+            <figure><img src={LOGO2_URL} alt="Логотип вариант 2" /><figcaption>Вариант логотипа 2</figcaption></figure>
           </div>
         </div>
       </section>
