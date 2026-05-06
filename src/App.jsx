@@ -42,7 +42,7 @@ function Foot({ dark=false }) {
 function Leopard({ mode }) {
   return (
     <div className={`leo ${mode}`}>
-      <img src="/src/Image_bars.png" alt="Снежный барс" loading="lazy" />
+      <img src="/Image_bars.png" alt="Снежный барс" loading="lazy" />
     </div>
   )
 }
