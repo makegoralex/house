@@ -123,6 +123,7 @@ export default function App() {
   const [activeId, setActiveId] = useState(landingVariants[0].id)
   const active = useMemo(() => landingVariants.find((v) => v.id === activeId) || landingVariants[0], [activeId])
 
+export default function App() {
   return (
     <main className="options-page">
       <section className="heading">
@@ -170,6 +171,8 @@ export default function App() {
             </tbody>
           </table>
         </div>
+        <button className="btn">Согласовать направление “Код города”</button>
+        <p className="note">Это предварительная концепция визуального направления. После согласования выбранного подхода на его основе разрабатываются финальные элементы брендбука, медиашаблоны, стикерпак и дизайн действующего сайта.</p>
       </section>
 
       <section className="recommend-block">
