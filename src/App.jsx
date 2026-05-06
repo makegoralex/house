@@ -14,7 +14,7 @@ function Header({ dark = false }) {
     <div className={`h ${dark ? 'd' : ''}`}>
       <div className="logo">OX <span>ОБНИНСКИЙ ХАКАТОН</span></div>
       <div className="menu">О хакатоне · Кейсы · Программа · Участники · Партнеры</div>
-      <button>Подать заявку</button>
+      <div className="head-right"><img className="head-bars" src="/src/assets/uploads/bars.png" alt="Барс" /><button>Подать заявку</button></div>
     </div>
   )
 }
@@ -41,7 +41,7 @@ function Foot({ dark=false }) {
 function Leopard({ mode }) {
   return (
     <div className={`leo ${mode}`}>
-      <img src="/src/Image_bars.png" alt="Снежный барс" loading="lazy" />
+      <img src="/src/assets/uploads/bars.png" alt="Снежный барс" loading="lazy" />
     </div>
   )
 }
@@ -90,6 +90,15 @@ export default function App() {
             <p>Постерный — для анонсов, соцсетей и событийного шума.</p>
             <p>Динамичный белый — для легкой подачи, onboarding и молодежных сценариев.</p>
           </article>
+        </div>
+
+        <div className="logo-variants">
+          <h3>Варианты логотипа</h3>
+          <p>Ниже — загруженные варианты логотипа для согласования после брендблоков.</p>
+          <div className="logo-grid">
+            <figure><img src="/src/assets/uploads/logo1.png" alt="Логотип вариант 1" /><figcaption>Вариант логотипа 1</figcaption></figure>
+            <figure><img src="/src/assets/uploads/logo2.png" alt="Логотип вариант 2" /><figcaption>Вариант логотипа 2</figcaption></figure>
+          </div>
         </div>
       </section>
     </main>
