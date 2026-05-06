@@ -8,9 +8,9 @@ const variants = [
 
 const stats = ['2 дня', '20+ кейсов', '300+ участников', '∞ идей']
 const features = ['РЕАЛЬНЫЕ КЕЙСЫ', 'ЭКСПЕРТЫ', 'ПРИЗЫ, СТАЖИРОВКИ', 'СООБЩЕСТВО']
-const BARS_URL = 'https://iimg.su/i/QJ2qsC'
-const LOGO1_URL = 'https://iimg.su/i/TXn8Eh'
-const LOGO2_URL = 'https://iimg.su/i/EKZmLd'
+const BARS_URL = 'https://s10.iimage.su/s/06/gQJ2qsCxcpb1JssejBpiw02oIwzWBVrwD56qDKVE7.png'
+const LOGO1_URL = 'https://s10.iimage.su/s/06/gTXn8EhxDAcFGFXHaGGGbiplLpn634f2wFb9Lt5Iv.png'
+const LOGO2_URL = 'https://s10.iimage.su/s/06/gEKZmLdxuDFwC4ulUizqOEyXfyQCeVDKy8JreV5DA.png'
 
 function Header({ dark = false }) {
   return (
