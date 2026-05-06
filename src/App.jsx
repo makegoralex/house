@@ -87,19 +87,28 @@ function VariantPreview({ variant }) {
     <section className={`variant-preview ${variant.previewClass}`}>
       <div className="vp-header">
         <div className="logo">ОХ · Обнинский Хакатон</div>
-        <nav>{navItems.map((item) => <span key={item}>{item}</span>)}</nav>
+        <nav>
+          {navItems.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </nav>
         <button>Подать заявку</button>
       </div>
 
       <div className="vp-body">
         <div>
-          <h3>Код города.<br />Решаем вместе.</h3>
+          <h3>
+            Код города.
+            <br />
+            Решаем вместе.
+          </h3>
           <p>Хакатон для тех, кто создает решения для города, технологий и людей.</p>
           <div className="cta-row">
             <a href="#">Подать заявку</a>
             <a href="#" className="ghost">Смотреть кейсы</a>
           </div>
         </div>
+
         <div className="visual-zone">
           <LeopardMark />
           <div className="route route-a" />
@@ -110,39 +119,75 @@ function VariantPreview({ variant }) {
         </div>
       </div>
 
-      <div className="stats-row">{stats.map((item) => <article key={item}>{item}</article>)}</div>
-      <div className="benefits-row">
-        <article>TEAM_ACTIVE</article><article>CASE_FLOW</article><article>ROUTE_01</article><article>SOLUTION_READY</article>
+      <div className="stats-row">
+        {stats.map((item) => (
+          <article key={item}>{item}</article>
+        ))}
       </div>
-      <div className="mobile-preview-note">Mobile preview: адаптация карточек и CTA в один столбец.</div>
+
+      <div className="benefits-row">
+        <article>TEAM_ACTIVE</article>
+        <article>CASE_FLOW</article>
+        <article>ROUTE_01</article>
+        <article>SOLUTION_READY</article>
+      </div>
+
+      <div className="mobile-preview-note">
+        Mobile preview: адаптация карточек и CTA в один столбец.
+      </div>
     </section>
   )
 }
 
 export default function App() {
   const [activeId, setActiveId] = useState(landingVariants[0].id)
-  const active = useMemo(() => landingVariants.find((v) => v.id === activeId) || landingVariants[0], [activeId])
+  const active = useMemo(
+    () => landingVariants.find((v) => v.id === activeId) || landingVariants[0],
+    [activeId]
+  )
 
-export default function App() {
   return (
     <main className="options-page">
       <section className="heading">
         <p className="kicker">Варианты лендинга · согласование визуальной концепции</p>
         <h1>Обнинский Хакатон — Код города</h1>
-        <p>Город становится интерфейсом: маршруты, кейсы и команды подаются как цифровая система, в которой участники двигаются от идеи к решению.</p>
+        <p>
+          Город становится интерфейсом: маршруты, кейсы и команды подаются как цифровая система,
+          в которой участники двигаются от идеи к решению.
+        </p>
+
         <div className="palette">
-          {['#0B1D3A', '#111827', '#2563EB', '#FFFFFF', '#B8FF2E'].map((color) => <span key={color}><i style={{ background: color }} />{color}</span>)}
+          {['#0B1D3A', '#111827', '#2563EB', '#FFFFFF', '#B8FF2E'].map((color) => (
+            <span key={color}>
+              <i style={{ background: color }} />
+              {color}
+            </span>
+          ))}
         </div>
       </section>
 
       <section className="variant-switcher">
         <div className="tabs" role="tablist" aria-label="Варианты лендинга">
           {landingVariants.map((v) => (
-            <button key={v.id} className={v.id === activeId ? 'active' : ''} onClick={() => setActiveId(v.id)}>{v.tab}</button>
+            <button
+              key={v.id}
+              className={v.id === activeId ? 'active' : ''}
+              onClick={() => setActiveId(v.id)}
+            >
+              {v.tab}
+            </button>
           ))}
         </div>
-        <select value={activeId} onChange={(e) => setActiveId(e.target.value)} aria-label="Выбрать вариант" className="mobile-select">
-          {landingVariants.map((v) => <option key={v.id} value={v.id}>{v.tab}</option>)}
+
+        <select
+          value={activeId}
+          onChange={(e) => setActiveId(e.target.value)}
+          aria-label="Выбрать вариант"
+          className="mobile-select"
+        >
+          {landingVariants.map((v) => (
+            <option key={v.id} value={v.id}>{v.tab}</option>
+          ))}
         </select>
 
         <VariantPreview variant={active} />
@@ -150,8 +195,11 @@ export default function App() {
         <article className="variant-meta">
           <div className="meta-head">
             <h2>{active.cardTitle}</h2>
-            {(active.id === 'dark-interface' || active.id === 'dashboard') && <span className="recommended">Рекомендуемый вариант</span>}
+            {(active.id === 'dark-interface' || active.id === 'dashboard') && (
+              <span className="recommended">Рекомендуемый вариант</span>
+            )}
           </div>
+
           <p><strong>Настроение:</strong> {active.mood}</p>
           <p>{active.description}</p>
           <h3>Что выбираем в этом варианте</h3>
@@ -161,24 +209,50 @@ export default function App() {
 
       <section className="compare">
         <h2>Сравнение вариантов</h2>
+
         <div className="table-wrap">
           <table>
-            <thead><tr><th>Вариант</th><th>Настроение</th><th>Сильная сторона</th><th>Риск</th><th>Где использовать</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Вариант</th>
+                <th>Настроение</th>
+                <th>Сильная сторона</th>
+                <th>Риск</th>
+                <th>Где использовать</th>
+              </tr>
+            </thead>
             <tbody>
               {landingVariants.map((v) => (
-                <tr key={v.id}><td>{v.cardTitle}</td><td>{v.mood}</td><td>{v.strengths}</td><td>{v.risks}</td><td>{v.recommendedFor}</td></tr>
+                <tr key={v.id}>
+                  <td>{v.cardTitle}</td>
+                  <td>{v.mood}</td>
+                  <td>{v.strengths}</td>
+                  <td>{v.risks}</td>
+                  <td>{v.recommendedFor}</td>
+                </tr>
               ))}
             </tbody>
           </table>
         </div>
+
         <button className="btn">Согласовать направление “Код города”</button>
-        <p className="note">Это предварительная концепция визуального направления. После согласования выбранного подхода на его основе разрабатываются финальные элементы брендбука, медиашаблоны, стикерпак и дизайн действующего сайта.</p>
+
+        <p className="note">
+          Это предварительная концепция визуального направления. После согласования выбранного
+          подхода на его основе разрабатываются финальные элементы брендбука, медиашаблоны,
+          стикерпак и дизайн действующего сайта.
+        </p>
       </section>
 
       <section className="recommend-block">
         <h2>Рекомендуемая сборка</h2>
-        <p><strong>Основа</strong> — Вариант 1 или 5, <strong>светлые блоки</strong> — из Варианта 2/4, <strong>городская связка</strong> — из Варианта 6, <strong>соцсети и афиши</strong> — из Варианта 3.</p>
-        <p>Итог: не выбираем один экран целиком, а собираем финальный стиль из сильных частей каждой версии.</p>
+        <p>
+          <strong>Основа</strong> — Вариант 1 или 5, <strong>светлые блоки</strong> — из Варианта 2/4,
+          <strong> городская связка</strong> — из Варианта 6, <strong>соцсети и афиши</strong> — из Варианта 3.
+        </p>
+        <p>
+          Итог: не выбираем один экран целиком, а собираем финальный стиль из сильных частей каждой версии.
+        </p>
       </section>
     </main>
   )
