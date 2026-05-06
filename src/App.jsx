@@ -17,7 +17,7 @@ function Header({ dark = false }) {
     <div className={`h ${dark ? 'd' : ''}`}>
       <div className="logo">OX <span>ОБНИНСКИЙ ХАКАТОН</span></div>
       <div className="menu">О хакатоне · Кейсы · Программа · Участники · Партнеры</div>
-      <div className="head-right"><img className="head-bars" src={BARS_URL} alt="Барс" /><button>Подать заявку</button></div>
+      <div className="head-right"><button>Подать заявку</button></div>
     </div>
   )
 }
@@ -97,7 +97,7 @@ export default function App() {
 
         <div className="logo-variants">
           <h3>Варианты логотипа</h3>
-          <p>Ниже — загруженные варианты логотипа для согласования после брендблоков.</p>
+          <p>Ниже — загруженные варианты логотипа для согласования</p>
           <div className="logo-grid">
             <figure><img src={LOGO1_URL} alt="Логотип вариант 1" /><figcaption>Вариант логотипа 1</figcaption></figure>
             <figure><img src={LOGO2_URL} alt="Логотип вариант 2" /><figcaption>Вариант логотипа 2</figcaption></figure>
