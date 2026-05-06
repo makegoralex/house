@@ -2,9 +2,8 @@ import { useState } from 'react'
 
 const variants = [
   { id: 'v1', label: 'Вариант 1 · Темный city interface' },
-  { id: 'v3', label: 'Вариант 3 · Постерный' },
-  { id: 'v4', label: 'Вариант 4 · Динамичный белый' },
-  { id: 'v5', label: 'Вариант 5 · Dashboard / система' },
+  { id: 'v2', label: 'Вариант 2 · Постерный' },
+  { id: 'v3', label: 'Вариант 3 · Динамичный белый' },
 ]
 
 const stats = ['2 дня', '20+ кейсов', '300+ участников', '∞ идей']
@@ -42,15 +41,14 @@ function Foot({ dark=false }) {
 function Leopard({ mode }) {
   return (
     <div className={`leo ${mode}`}>
-      <img src="/Image_bars.png" alt="Снежный барс" loading="lazy" />
+      <img src="/src/Image_bars.png" alt="Снежный барс" loading="lazy" />
     </div>
   )
 }
 
 function Preview({ id }) {
-  if (id === 'v3') return <section className="p p3"><Header dark={false} /><div className="body split"><BaseInfo compact /><div className="poster"><Leopard mode="poster" /></div></div><Foot /></section>
-  if (id === 'v4') return <section className="p p4"><Header dark={false} /><div className="body"><BaseInfo /><div className="rush"><Leopard mode="rush" /></div></div><Foot /></section>
-  if (id === 'v5') return <section className="p p5"><Header dark /><div className="body board"><BaseInfo dark /><div className="dash"><div className="panel">ROUTE_01</div><div className="panel">TEAM_ACTIVE</div><div className="panel">STATUS: ON</div><Leopard mode="dash" /></div></div><Foot dark /></section>
+  if (id === 'v2') return <section className="p p3"><Header dark={false} /><div className="body split"><BaseInfo compact /><div className="poster"><Leopard mode="poster" /></div></div><Foot /></section>
+  if (id === 'v3') return <section className="p p4"><Header dark={false} /><div className="body"><BaseInfo /><div className="rush"><Leopard mode="rush" /></div></div><Foot /></section>
   return <section className="p p1"><Header dark /><div className="body"><BaseInfo dark /><div className="map"><div className="tag">КОМАНДЫ</div><div className="tag">МАРШРУТЫ</div><div className="tag">ИДЕИ</div><div className="tag">РЕШЕНИЯ</div><Leopard mode="dark" /></div></div><Foot dark /></section>
 }
 
@@ -58,7 +56,7 @@ export default function App() {
   const [active, setActive] = useState('v1')
   return (
     <main className="page">
-      <h1>Варианты лендингов — Обнинский Хакатон</h1>
+      <h1>Варианты лендинга и айдентики — Обнинский Хакатон</h1>
       <div className="tabs">{variants.map(v => <button className={active===v.id?'a':''} key={v.id} onClick={()=>setActive(v.id)}>{v.label}</button>)}</div>
       <Preview id={active} />
     </main>
