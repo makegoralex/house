@@ -8,11 +8,10 @@ const variants = [
 
 const socialFormats = [
   { id: 'vk-cover', label: 'VK cover', size: '1590×400', title: 'Широкая обложка сообщества VK' },
-  { id: 'tg-post', label: 'TG post', size: '1080×1080', title: 'Квадратный пост Telegram' },
-  { id: 'vk-post', label: 'VK post', size: '1080×1350', title: 'Вертикальный пост VK' },
-  { id: 'stories', label: 'Stories', size: '1080×1920', title: 'Stories / Reels cover' },
-  { id: 'program', label: 'Program', size: '1080×1080', title: 'Обложка программы' },
-  { id: 'partners', label: 'Partners', size: '1080×1080', title: 'Обложка партнеров' },
+  { id: 'tg-post', label: 'TG post', size: '1590×400', title: 'Квадратный пост Telegram' },
+  { id: 'vk-post', label: 'VK post', size: '1590×400', title: 'Вертикальный пост VK' },
+  { id: 'stories', label: 'Stories', size: '1590×400', title: 'Stories / Reels cover' },
+  { id: 'partners', label: 'Partners', size: '1590×400', title: 'Обложка партнеров' },
 ]
 
 const stats = ['2 дня', '20+ кейсов', '300+ участников', '∞ идей']
@@ -40,7 +39,6 @@ function SocialPreview({ id }) {
   if (id === 'tg-post') return <div className="soc-card sq"><p className="strap">ОБНИНСКИЙ ХАКАТОН</p><h4>РЕГИСТРАЦИЯ<br />ОТКРЫТА</h4><button>ПОДАТЬ ЗАЯВКУ</button>{common}</div>
   if (id === 'vk-post') return <div className="soc-card vk-post"><h4>КЕЙСЫ<br />ХАКАТОНА</h4><p>Реальные задачи от партнеров и города</p><div className="mini3"><span>ГОРОД</span><span>ТЕХНОЛОГИИ</span><span>КОМАНДЫ</span></div>{common}</div>
   if (id === 'stories') return <div className="soc-card stories"><h4><span>2</span> ДНЯ<br /><span>20+</span> КЕЙСОВ<br /><span>300+</span> УЧАСТНИКОВ</h4><button>СТАНЬ УЧАСТНИКОМ</button>{common}</div>
-  if (id === 'program') return <div className="soc-card sq"><h4>ПРОГРАММА<br />МЕРОПРИЯТИЯ</h4><div className="timeline"><b>ДЕНЬ 1</b><b>ДЕНЬ 2</b><b>ФИНАЛ</b></div>{common}</div>
   return <div className="soc-card sq"><h4>ПАРТНЕРЫ<br />ХАКАТОНА</h4><p>Компании, эксперты и команды в одной системе</p><div className="partners-grid"><i /><i /><i /><i /></div>{common}</div>
 }
 
